@@ -1,0 +1,58 @@
+================================================================================
+Titan-ANPR SDK — Third-party components
+================================================================================
+
+The native runtime shipped with this SDK (under the bin/ folder) may include or
+depend on third-party libraries. Those components remain the property of their
+respective licensors and are distributed under their own license terms.
+
+Safety Road / the Titan-ANPR vendor does not claim ownership of third-party
+open-source or commercial runtimes bundled for technical operation of the SDK.
+
+You must retain this file (or equivalent notices) when redistributing the SDK
+binaries, as required by common open-source licenses (e.g. MIT, Apache 2.0,
+BSD).
+
+--------------------------------------------------------------------------------
+Components (fill in exact names, versions, and license files shipped with your
+build — copy full license text below or attach vendor NOTICE files)
+--------------------------------------------------------------------------------
+
+Example entries (replace with your actual build manifest):
+
+1) OpenCV
+   - Version: <e.g. 4.x>
+   - License: Apache 2.0 / BSD (see OpenCV distribution)
+   - Source: https://opencv.org/
+
+2) ONNX Runtime (if applicable)
+   - Version: <e.g. 1.x>
+   - License: MIT
+   - Source: https://github.com/microsoft/onnxruntime
+
+3) Intel OpenVINO / oneAPI / TBB (if applicable)
+   - Version: <...>
+   - License: See Intel distribution (e.g. Apache 2.0 components)
+   - Source: https://www.intel.com/content/www/us/en/developer/tools/openvino-toolkit/overview.html
+
+4) Other DLLs in your bin folder
+   - List each with version and license reference.
+
+--------------------------------------------------------------------------------
+Disclaimer
+--------------------------------------------------------------------------------
+
+THIRD-PARTY SOFTWARE IS PROVIDED BY THE RESPECTIVE LICENSORS "AS IS", WITHOUT
+WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
+(Your legal counsel may adapt the above to match your commercial license and
+jurisdiction.)
+
+================================================================================
+End of file — Update this document before each public SDK release.
+================================================================================

@@ -1,0 +1,93 @@
+﻿LICENSE FOR TITAN-ANPR SDK (BINARY COMPONENTS)
+=============================================
+
+IMPORTANT: This license applies to the proprietary Titan-ANPR SDK binaries
+and headers (including but not limited to `Titan-ANPR.dll`, any associated
+native DLLs, models and `include/*.h`), collectively the "SDK".
+
+It does NOT apply to the example source code under the `samples/` directory,
+which is licensed separately (see LICENSE-SAMPLES.txt).
+
+1. Commercial license
+----------------------
+
+The SDK is proprietary software owned by SafetyRoad.
+
+- A paid commercial license is required for any **production** or
+  **runtime** use of the SDK (including integration into your own
+  commercial or internal applications).
+- An **evaluation / trial** period of 30 days is granted solely for
+  testing and technical evaluation of the SDK. During the trial you
+  may not deploy the SDK to production or provide it as part of a
+  product or service to third parties.
+
+2. Activation
+-------------
+
+To use the SDK, you must obtain a valid license key from SafetyRoad.
+
+- Retrieve the machine hardware ID using the `TitanLicense_*` API or the
+  provided sample tools (C#, Python, etc.).
+- Send the hardware ID to `licenses@safetyroad.es`.
+- SafetyRoad will issue a license key subject to your commercial
+  agreement and/or evaluation terms.
+
+SafetyRoad may revoke or refuse to issue license keys in case of
+violation of the license terms.
+
+3. Redistribution
+-----------------
+
+You may redistribute the SDK **only** as part of an application that you
+own, and only to the extent necessary for that application to function,
+subject to a valid commercial agreement with SafetyRoad.
+
+You may **not**:
+
+- Resell, re-license, sub-license or otherwise distribute the SDK as a
+  standalone product.
+- Publish the SDK binaries or headers in public repositories or
+  package managers, except with explicit written authorization from
+  SafetyRoad.
+
+You must keep `THIRD_PARTY_NOTICES.txt` or equivalent third-party
+notices together with the SDK binaries, as required by the licenses of
+any bundled third-party components.
+
+4. Restrictions
+----------------
+
+Unless expressly permitted in writing by SafetyRoad, you may not:
+
+- Reverse engineer, decompile, disassemble or attempt to derive the
+  source code, models or internal architecture of the SDK, except to the
+  extent that such restriction is expressly prohibited by applicable law.
+- Remove or alter any copyright, trademark or other proprietary
+  notices contained in the SDK or its documentation.
+- Use the SDK in any manner that violates applicable law, including but
+  not limited to privacy, data protection and traffic regulations.
+
+5. No warranty
+--------------
+
+THE SDK IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, WHETHER EXPRESS
+OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT.
+
+IN NO EVENT SHALL SAFETYROAD BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SDK OR THE USE OR OTHER DEALINGS
+IN THE SDK, EXCEPT TO THE EXTENT SUCH LIABILITY CANNOT BE EXCLUDED UNDER
+APPLICABLE LAW.
+
+6. Governing law
+----------------
+
+This license shall be governed by and construed in accordance with the
+laws applicable at the registered office of SafetyRoad, without regard
+to conflict of law principles.
+
+For commercial terms, pricing and full legal conditions, please refer to
+your commercial agreement with SafetyRoad or contact
+`licenses@safetyroad.es`.
+
