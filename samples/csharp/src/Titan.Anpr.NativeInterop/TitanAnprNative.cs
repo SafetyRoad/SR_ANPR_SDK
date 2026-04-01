@@ -1,4 +1,4 @@
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace Titan.Anpr.NativeInterop;
 
@@ -15,7 +15,7 @@ public static class TitanAnprNative
         public float y;
     }
 
-    /// <summary>Result of <see cref="TitanANPR_Detect"/> (native <c>TitanAnprResult</c>).</summary>
+    /// <summary>Result item returned by <see cref="TitanANPR_Detect"/>.</summary>
     [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
     public struct TitanAnprResult
     {
@@ -42,7 +42,9 @@ public static class TitanAnprNative
         int width,
         int height,
         int stride,
-        ref TitanAnprResult out_result);
+        [Out] TitanAnprResult[] out_results,
+        int max_results,
+        out int returned_count);
 
     [DllImport(NativeDll.DllName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true, EntryPoint = "TitanANPR_Dispose")]
     public static extern void TitanANPR_Dispose(IntPtr handle);

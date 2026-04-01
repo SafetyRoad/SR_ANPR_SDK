@@ -1,4 +1,4 @@
-﻿# C# samples — Titan-ANPR SDK
+# C# samples — Titan-ANPR SDK
 
 This folder contains a .NET 8 sample solution for integrating the native Titan-ANPR SDK (`Titan-ANPR.dll`) from C#.
 
@@ -30,3 +30,4 @@ Solution file: `Titan.Anpr.Samples.sln`.
 ## See also
 
 - Python samples: `../python/README.md`
+`r`nThe detection sample uses the unified multi-result `TitanANPR_Detect` signature (`out_results`, `max_results`, `returned_count`) and renders all returned plates per image.`r`n

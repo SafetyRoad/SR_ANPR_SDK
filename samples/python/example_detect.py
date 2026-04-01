@@ -1,5 +1,6 @@
-"""
-Detection sample: TitanANPR_Init -> TitanANPR_Detect on one image (RGB 24 bpp, packed stride = width*3).
+﻿"""
+Detection sample: TitanANPR_Init -> TitanANPR_Detect on one image
+using the unified multi-result API.
 
   python example_detect.py --bin "C:\\path\\to\\bin" plate.jpg
 
@@ -11,7 +12,7 @@ from __future__ import annotations
 import argparse
 import sys
 import time
-from ctypes import byref, c_void_p
+from ctypes import byref, c_int, c_void_p
 
 import numpy as np
 from PIL import Image
@@ -19,14 +20,13 @@ from PIL import Image
 from titan_anpr_bindings import TitanAnprResult, anpr_result_plate_text, bind_anpr_api, load_dll
 
 
+MAX_RESULTS = 32
+
+
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Titan-ANPR unified detect (ctypes sample)")
+    parser = argparse.ArgumentParser(description="Titan-ANPR unified detect (multi-result ctypes sample)")
     parser.add_argument("image", help="Path to an image file")
-    parser.add_argument(
-        "--bin",
-        default=None,
-        help="Directory containing Titan-ANPR.dll",
-    )
+    parser.add_argument("--bin", default=None, help="Directory containing Titan-ANPR.dll")
     args = parser.parse_args()
 
     try:
@@ -49,7 +49,9 @@ def main() -> int:
         height, width, _ = arr.shape
         stride = width * 3
 
-        result = TitanAnprResult()
+        results = (TitanAnprResult * MAX_RESULTS)()
+        returned_count = c_int(0)
+
         t0 = time.perf_counter()
         rc = dll.TitanANPR_Detect(
             handle,
@@ -57,7 +59,9 @@ def main() -> int:
             width,
             height,
             stride,
-            byref(result),
+            results,
+            MAX_RESULTS,
+            byref(returned_count),
         )
         elapsed_ms = (time.perf_counter() - t0) * 1000.0
 
@@ -65,11 +69,16 @@ def main() -> int:
             print(f"TitanANPR_Detect failed, rc={rc}", file=sys.stderr)
             return 1
 
-        text = anpr_result_plate_text(result)
-        print(f"Plate:            {text!r}" if text else "Plate:            (none)")
-        print(f"Found:            {result.found}")
-        print(f"Total confidence: {result.total_confidence:.4f}")
+        count = max(0, min(returned_count.value, MAX_RESULTS))
+        print(f"Returned plates:  {count}")
         print(f"Engine time:      {elapsed_ms:.2f} ms")
+
+        for i in range(count):
+            item = results[i]
+            text = anpr_result_plate_text(item)
+            label = text if text else "(none)"
+            print(f"[{i+1}] Plate: {label!r} | Total confidence: {item.total_confidence:.4f} | Found: {item.found}")
+
         return 0
     finally:
         dll.TitanANPR_Dispose(handle)

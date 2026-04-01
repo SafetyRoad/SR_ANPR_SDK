@@ -1,4 +1,4 @@
-"""
+﻿"""
 ctypes bindings for Titan-ANPR (titan_anpr.h, titan_license.h).
 
 Windows x64 only. Call resolve_bin_dir() or set TITAN_ANPR_NATIVE_DIR before load_dll().
@@ -12,13 +12,11 @@ from ctypes import (
     CDLL,
     POINTER,
     Structure,
-    byref,
     c_char,
     c_char_p,
     c_float,
     c_int,
     c_void_p,
-    create_string_buffer,
 )
 from pathlib import Path
 from typing import Optional
@@ -59,10 +57,7 @@ class TitanLicenseInfo(Structure):
 
 
 def resolve_bin_dir(explicit: Optional[str | Path] = None) -> Path:
-    """
-    Folder containing Titan-ANPR.dll.
-    Order: explicit argument > TITAN_ANPR_NATIVE_DIR > walk parents for bin/Titan-ANPR/.../bin.
-    """
+    """Return the folder that contains Titan-ANPR.dll."""
     if explicit is not None:
         p = Path(explicit).resolve()
         if p.is_file() and p.name.lower() == "titan-anpr.dll":
@@ -100,10 +95,7 @@ def resolve_bin_dir(explicit: Optional[str | Path] = None) -> Path:
 
 
 def load_dll(bin_dir: Optional[str | Path] = None) -> CDLL:
-    """
-    Load Titan-ANPR.dll from bin_dir. Uses os.add_dll_directory (Python 3.8+) so dependent DLLs load.
-    If bin_dir is None, uses resolve_bin_dir().
-    """
+    """Load Titan-ANPR.dll and make dependent DLLs discoverable."""
     if bin_dir is None:
         d = resolve_bin_dir()
     else:
@@ -117,8 +109,7 @@ def load_dll(bin_dir: Optional[str | Path] = None) -> CDLL:
     if hasattr(os, "add_dll_directory"):
         os.add_dll_directory(str(d))
 
-    dll_path = d / "Titan-ANPR.dll"
-    return CDLL(str(dll_path))
+    return CDLL(str(d / "Titan-ANPR.dll"))
 
 
 def bind_license_api(dll: CDLL) -> None:
@@ -140,7 +131,7 @@ def bind_license_api(dll: CDLL) -> None:
 
 
 def bind_anpr_api(dll: CDLL) -> None:
-    """Attach ctypes signatures for TitanANPR_* unified detection exports."""
+    """Attach ctypes signatures for unified TitanANPR_* exports (multi-result Detect)."""
     dll.TitanANPR_Init.argtypes = [POINTER(c_void_p)]
     dll.TitanANPR_Init.restype = c_int
 
@@ -151,6 +142,8 @@ def bind_anpr_api(dll: CDLL) -> None:
         c_int,
         c_int,
         POINTER(TitanAnprResult),
+        c_int,
+        POINTER(c_int),
     ]
     dll.TitanANPR_Detect.restype = c_int
 

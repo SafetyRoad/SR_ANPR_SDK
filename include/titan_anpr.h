@@ -92,14 +92,16 @@ typedef struct TitanAnprResult
 // API unificada solicitada:
 // _Init: crea detector+ocr y hace warmup para evitar latencia en primera deteccion.
 TITAN_ANPR_API int TitanANPR_Init(TitanAnprHandle* out_handle);
-// _Detect: devuelve texto, fiabilidad total y 4 puntos de la matricula principal detectada.
+// _Detect: devuelve una lista de matriculas detectadas en la imagen.
 TITAN_ANPR_API int TitanANPR_Detect(
     TitanAnprHandle handle,
     const unsigned char* img_data,
     int width,
     int height,
     int stride,
-    TitanAnprResult* out_result
+    TitanAnprResult* out_results,
+    int max_results,
+    int* returned_count
 );
 // _Dispose / _Clear: libera toda la memoria asociada.
 TITAN_ANPR_API void TitanANPR_Dispose(TitanAnprHandle handle);

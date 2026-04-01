@@ -1,4 +1,4 @@
-﻿# Python samples — Titan-ANPR SDK
+# Python samples — Titan-ANPR SDK
 
 Minimal `ctypes` examples for Windows x64, in the same spirit as the C# projects under `samples/csharp`.
 
@@ -57,7 +57,7 @@ python example_license.py --bin "D:\sdk\bin" deactivate
 python example_detect.py --bin "D:\sdk\bin" path\to\photo.jpg
 ```
 
-Prints plate text, `found`, total confidence, and approximate `TitanANPR_Detect` time (does not include `Init`).
+Prints all returned plate results from `TitanANPR_Detect` (up to `max_results`), including plate text and confidence, plus approximate detect time (does not include `Init`).
 
 ## Files
 
@@ -70,5 +70,5 @@ Prints plate text, `found`, total confidence, and approximate `TitanANPR_Detect`
 ## Limitations
 
 - Windows only
-- Unified API returns one primary plate per call
+- Unified API supports multiple results per call (`returnedCount`)
 - No overlay GUI in these Python scripts

@@ -1,10 +1,10 @@
-﻿# Titan-ANPR SDK (User Guide)
+# Titan-ANPR SDK (User Guide)
 
 Titan-ANPR is a native Windows x64 DLL for:
 
 - License plate detection
 - OCR text recognition
-- Single-call pipeline (`Init` -> `Detect` -> `Dispose`)
+- Unified pipeline (`Init` -> `Detect` -> `Dispose`)
 
 This guide is focused on SDK consumers.
 
@@ -26,28 +26,12 @@ It includes this structure:
   - `Titan-ANPR.lib` (import library for linking with the DLL)
 - `docs/`
   - `README.md`
-  - `THIRD_PARTY_NOTICES.txt` (third-party runtimes shipped with the native `bin`; update per release)
   - `InternalInfo.md` (internal technical notes)
-
-## Third-party components
-
-The redistributable native `bin` folder may include DLLs from projects such as ONNX Runtime, OpenVINO, TBB, OpenCV, and others. Those components are subject to their own licenses and notice requirements. See `THIRD_PARTY_NOTICES.txt` in this folder and keep it in any ZIP or installer you ship to customers.
 
 ## Platform Requirements
 
 - Windows x64
 - Microsoft Visual C++ 2015-2022 Redistributable (x64)
-
-## License model
-
-- Commercial SDK (production/runtime usage requires a valid paid license).
-- 30-day trial is available for evaluation.
-- To activate, retrieve the machine hardware ID (see `titan_license.h` API or sample apps) and request a license key at `licenses@safetyroad.es`.
-
-## Online resources
-
-- SDK page: https://safetyroad.es/anpr-sdk
-- OCR online demo: https://safetyroad.es/ocr-demo
 
 ## Core API
 
@@ -59,7 +43,13 @@ Main functions:
 - `TitanANPR_Clear`
 - `TitanANPR_GetSelectedEP`
 
-Result returned by `TitanANPR_Detect`:
+`TitanANPR_Detect` returns a list of `TitanAnprResult` items.
+
+Function shape:
+
+- `TitanANPR_Detect(handle, imgData, width, height, stride, outResults, maxResults, returnedCount)`
+
+Each `TitanAnprResult` contains:
 
 - `found`
 - `plate_text`
@@ -74,7 +64,9 @@ Result returned by `TitanANPR_Detect`:
 - `TitanANPR_Init(&handle)`
 
 2. Run detection on each frame:
-- `TitanANPR_Detect(handle, imgData, width, height, stride, &result)`
+- allocate an array of `TitanAnprResult` (for example 16 or 32 items)
+- call `TitanANPR_Detect(handle, imgData, width, height, stride, outResults, maxResults, &returnedCount)`
+- process the first `returnedCount` entries
 
 3. Release resources:
 - `TitanANPR_Dispose(handle)`
@@ -84,8 +76,10 @@ Result returned by `TitanANPR_Detect`:
 Typical flow:
 
 1. Create engine (calls `Init` once)
-2. Call `Detect` for each frame
+2. Call `DetectAll` for each frame (or `Detect` if you only want the first match)
 3. Dispose engine on shutdown
+
+If you already use `TitanAnprNativeWrapper.cs`, no additional glue code is required.
 
 ## Error Handling
 

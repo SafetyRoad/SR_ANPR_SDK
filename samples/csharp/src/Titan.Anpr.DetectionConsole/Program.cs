@@ -1,4 +1,4 @@
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -10,6 +10,7 @@ namespace Titan.Anpr.DetectionConsole;
 
 /// <summary>
 /// Console sample: run Titan-ANPR on one image or all images in a folder, print metrics, and save overlay previews.
+/// Uses the unified API multi-result mode (`TitanANPR_Detect` list output).
 /// </summary>
 internal static class Program
 {
@@ -18,6 +19,7 @@ internal static class Program
         ".jpg", ".jpeg", ".png", ".bmp", ".tif", ".tiff"
     };
 
+    private const int MaxResults = 32;
     private static bool _winFormsInitialized;
 
     [STAThread]
@@ -96,8 +98,9 @@ internal static class Program
             Images are processed one at a time. After each image you must press a key in the preview window (or close it)
             before the next one runs, so only one window is open. With --no-open, the same pacing uses the console.
 
-            For each image the sample prints: plate text (if any), total confidence, and engine time for TitanANPR_Detect only.
-            Overlay PNGs show the oriented plate quad (green), axis-aligned bounding box (dashed orange), and plate text.
+            For each image the sample prints all returned plates from TitanANPR_Detect,
+            with text, confidence and total engine time for the full Detect call.
+            Overlay PNGs show one quadrilateral/box per returned result.
 
             Native DLL resolution matches other samples (see Titan.Anpr.NativeInterop / Program.Main nativeBinDirectory).
             """);
@@ -117,9 +120,7 @@ internal static class Program
                 if (a is "--no-open")
                     noOpen = true;
                 else if (a is "--out" && i + 1 < args.Length)
-                {
                     outDir = args[++i];
-                }
                 continue;
             }
 
@@ -165,9 +166,8 @@ internal static class Program
     {
         void PromptBeforeNext()
         {
-            if (!waitAfterStep)
-                return;
-            WaitForUserBeforeNextImage(options);
+            if (waitAfterStep)
+                WaitForUserBeforeNextImage(options);
         }
 
         Console.WriteLine();
@@ -200,9 +200,10 @@ internal static class Program
                 return false;
             }
 
-            var result = default(TitanAnprNative.TitanAnprResult);
+            var results = new TitanAnprNative.TitanAnprResult[MaxResults];
             var sw = Stopwatch.StartNew();
             int detectRc;
+            int returnedCount;
             try
             {
                 detectRc = TitanAnprNative.TitanANPR_Detect(
@@ -211,13 +212,14 @@ internal static class Program
                     rgb.Width,
                     rgb.Height,
                     data.Stride,
-                    ref result);
+                    results,
+                    MaxResults,
+                    out returnedCount);
             }
             finally
             {
                 rgb.UnlockBits(data);
             }
-
             sw.Stop();
 
             if (detectRc != 0)
@@ -227,22 +229,28 @@ internal static class Program
                 return false;
             }
 
-            var plate = string.IsNullOrWhiteSpace(result.plate_text)
-                ? "(none)"
-                : result.plate_text.Trim('\0', ' ');
+            if (returnedCount < 0)
+                returnedCount = 0;
+            if (returnedCount > MaxResults)
+                returnedCount = MaxResults;
 
-            var conf = result.total_confidence.ToString("0.###", CultureInfo.InvariantCulture);
             var ms = sw.Elapsed.TotalMilliseconds.ToString("0.##", CultureInfo.InvariantCulture);
-
-            Console.WriteLine("  Plate:            " + plate);
-            Console.WriteLine("  Total confidence: " + conf);
+            Console.WriteLine("  Returned plates:  " + returnedCount);
             Console.WriteLine("  Engine time:      " + ms + " ms");
+
+            for (var i = 0; i < returnedCount; i++)
+            {
+                var r = results[i];
+                var plate = string.IsNullOrWhiteSpace(r.plate_text) ? "(none)" : r.plate_text.Trim('\0', ' ');
+                var conf = r.total_confidence.ToString("0.###", CultureInfo.InvariantCulture);
+                Console.WriteLine($"  [{i + 1}] Plate: {plate} | Total confidence: {conf}");
+            }
 
             using var overlay = (Bitmap)rgb.Clone();
             using (var g = Graphics.FromImage(overlay))
             {
-                if (result.found != 0)
-                    OverlayRenderer.DrawPlateOverlay(g, in result);
+                if (returnedCount > 0)
+                    OverlayRenderer.DrawPlateOverlays(g, results.Take(returnedCount).ToArray());
                 else
                     OverlayRenderer.DrawNoPlateBanner(g, overlay.Width, overlay.Height);
             }
@@ -263,14 +271,10 @@ internal static class Program
             options.LastOverlayPath = outPath;
 
             PromptBeforeNext();
-
             return true;
         }
     }
 
-    /// <summary>
-    /// Blocks until the user continues: one preview window at a time when an overlay exists, otherwise the console.
-    /// </summary>
     private static void WaitForUserBeforeNextImage(Options options)
     {
         var path = options.LastOverlayPath;
