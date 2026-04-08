@@ -1,4 +1,4 @@
-﻿"""
+"""
 ctypes bindings for Titan-ANPR (titan_anpr.h, titan_license.h).
 
 Windows x64 only. Call resolve_bin_dir() or set TITAN_ANPR_NATIVE_DIR before load_dll().
@@ -36,11 +36,14 @@ class TitanAnprResult(Structure):
         ("total_confidence", c_float),
         ("plate_confidence", c_float),
         ("ocr_confidence", c_float),
+        ("country_id", c_int),
+        ("country_confidence", c_float),
         ("point0", PlatePoint),
         ("point1", PlatePoint),
         ("point2", PlatePoint),
         ("point3", PlatePoint),
         ("plate_text", c_char * 32),
+        ("country_name", c_char * 64),
     ]
 
 
@@ -167,3 +170,8 @@ def license_info_to_dict(info: TitanLicenseInfo) -> dict:
 def anpr_result_plate_text(result: TitanAnprResult) -> str:
     """Decode the fixed-size plate_text field from TitanAnprResult."""
     return _decode_cstr(bytes(result.plate_text))
+
+
+def anpr_result_country_name(result: TitanAnprResult) -> str:
+    """Decode the fixed-size country_name field from TitanAnprResult."""
+    return _decode_cstr(bytes(result.country_name))

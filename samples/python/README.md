@@ -57,7 +57,7 @@ python example_license.py --bin "D:\sdk\bin" deactivate
 python example_detect.py --bin "D:\sdk\bin" path\to\photo.jpg
 ```
 
-Prints all returned plate results from `TitanANPR_Detect` (up to `max_results`), including plate text and confidence, plus approximate detect time (does not include `Init`).
+Prints all returned plate results from `TitanANPR_Detect` (up to `max_results`), including plate text, country fields (`country_id`, `country_confidence`, `country_name`), and confidence, plus approximate detect time (does not include `Init`).
 
 ## Files
 

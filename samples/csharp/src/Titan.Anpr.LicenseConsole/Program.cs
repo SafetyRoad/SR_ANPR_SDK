@@ -15,8 +15,8 @@ internal static class Program
 
         // Optional: folder that contains Titan-ANPR.dll (absolute or relative to the process working directory).
         // Leave null to use TITAN_ANPR_NATIVE_DIR, then repository layout discovery, then the app directory.
-        string? nativeBinDirectory = @"C:\repos\SR_ANPR_SDK\bin";
-        // Example: nativeBinDirectory = @"C:\repos\SR_ANPR_SDK\bin";
+        string? nativeBinDirectory = null;
+        // Example: nativeBinDirectory = @"D:\TitanSDK\bin\Titan-ANPR\Release\x64\bin";
         NativeDll.BinDirectoryOverride = nativeBinDirectory;
 
         if (args.Length > 0 && IsHelpSwitch(args[0]))

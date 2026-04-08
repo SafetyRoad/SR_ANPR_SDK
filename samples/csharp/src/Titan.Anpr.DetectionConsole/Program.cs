@@ -1,4 +1,4 @@
-﻿using System.Diagnostics;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Globalization;
@@ -28,7 +28,8 @@ internal static class Program
         Console.OutputEncoding = Encoding.UTF8;
 
         // Optional: folder that contains Titan-ANPR.dll (absolute or relative to the process working directory).
-        string? nativeBinDirectory = @"C:\repos\SR_ANPR_SDK\bin";
+        string? nativeBinDirectory = null;
+        // Example: nativeBinDirectory = @"D:\TitanSDK\bin\Titan-ANPR\Release\x64\bin";
         NativeDll.BinDirectoryOverride = nativeBinDirectory;
 
         if (args.Length == 0 || HasHelpSwitch(args))
@@ -243,7 +244,11 @@ internal static class Program
                 var r = results[i];
                 var plate = string.IsNullOrWhiteSpace(r.plate_text) ? "(none)" : r.plate_text.Trim('\0', ' ');
                 var conf = r.total_confidence.ToString("0.###", CultureInfo.InvariantCulture);
-                Console.WriteLine($"  [{i + 1}] Plate: {plate} | Total confidence: {conf}");
+                var country = string.IsNullOrWhiteSpace(r.country_name)
+                    ? $"id={r.country_id}"
+                    : r.country_name.Trim('\0', ' ');
+                var cconf = r.country_confidence.ToString("0.###", CultureInfo.InvariantCulture);
+                Console.WriteLine($"  [{i + 1}] Plate: {plate} | Country: {country} (conf {cconf}) | Total confidence: {conf}");
             }
 
             using var overlay = (Bitmap)rgb.Clone();

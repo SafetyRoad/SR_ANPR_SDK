@@ -1,4 +1,4 @@
-﻿"""
+"""
 Detection sample: TitanANPR_Init -> TitanANPR_Detect on one image
 using the unified multi-result API.
 
@@ -17,7 +17,13 @@ from ctypes import byref, c_int, c_void_p
 import numpy as np
 from PIL import Image
 
-from titan_anpr_bindings import TitanAnprResult, anpr_result_plate_text, bind_anpr_api, load_dll
+from titan_anpr_bindings import (
+    TitanAnprResult,
+    anpr_result_country_name,
+    anpr_result_plate_text,
+    bind_anpr_api,
+    load_dll,
+)
 
 
 MAX_RESULTS = 32
@@ -77,7 +83,12 @@ def main() -> int:
             item = results[i]
             text = anpr_result_plate_text(item)
             label = text if text else "(none)"
-            print(f"[{i+1}] Plate: {label!r} | Total confidence: {item.total_confidence:.4f} | Found: {item.found}")
+            cname = anpr_result_country_name(item)
+            print(
+                f"[{i+1}] Plate: {label!r} | Country: {cname or '-'} "
+                f"(id={item.country_id}, conf={item.country_confidence:.4f}) | "
+                f"Total confidence: {item.total_confidence:.4f} | Found: {item.found}"
+            )
 
         return 0
     finally:

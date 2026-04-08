@@ -12,6 +12,7 @@ extern "C" {
 
 typedef void* PlateDetectorHandle;
 typedef void* OcrDetectorHandle;
+typedef void* CountryDetectorHandle;
 
 typedef struct PlateRect
 {
@@ -77,6 +78,18 @@ TITAN_ANPR_API int OcrDetector_GetTextEx(
     float* ocr_confidence
 );
 
+TITAN_ANPR_API int CountryDetector_Create(const char* model_path, CountryDetectorHandle* out_handle);
+TITAN_ANPR_API void CountryDetector_Destroy(CountryDetectorHandle handle);
+TITAN_ANPR_API int CountryDetector_Predict(
+    CountryDetectorHandle handle,
+    const unsigned char* img_data,
+    int width,
+    int height,
+    int stride,
+    int* out_country_id,
+    float* out_confidence
+);
+
 typedef void* TitanAnprHandle;
 
 typedef struct TitanAnprResult
@@ -85,8 +98,11 @@ typedef struct TitanAnprResult
     float total_confidence;
     float plate_confidence;
     float ocr_confidence;
+    int country_id;
+    float country_confidence;
     PlatePoint points[4];
     char plate_text[32];
+    char country_name[64];
 } TitanAnprResult;
 
 // API unificada solicitada:

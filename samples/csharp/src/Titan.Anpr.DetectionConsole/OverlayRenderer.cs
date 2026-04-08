@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using Titan.Anpr.NativeInterop;
@@ -65,7 +65,10 @@ internal static class OverlayRenderer
             g.DrawPolygon(quadPen, pts);
 
             var text = string.IsNullOrWhiteSpace(result.plate_text) ? "(no text)" : result.plate_text.Trim('\0', ' ');
-            var label = $"#{idx + 1} {text}";
+            var country = string.IsNullOrWhiteSpace(result.country_name)
+                ? null
+                : result.country_name.Trim('\0', ' ');
+            var label = country is null ? $"#{idx + 1} {text}" : $"#{idx + 1} {text} [{country}]";
             using var font = new Font(FontFamily.GenericSansSerif, 14f, FontStyle.Bold, GraphicsUnit.Pixel);
             using var fill = new SolidBrush(Color.FromArgb(200, 0, 0, 0));
             using var outline = new Pen(Color.Lime, 2f);

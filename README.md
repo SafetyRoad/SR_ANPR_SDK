@@ -1,4 +1,4 @@
-﻿# Titan-ANPR SDK
+# Titan-ANPR SDK
 
 Titan-ANPR is a native Windows x64 SDK for automatic license plate recognition (ANPR/LPR), combining plate detection and OCR.
 
@@ -27,3 +27,7 @@ Titan-ANPR is a native Windows x64 SDK for automatic license plate recognition (
 3. Run detection samples for C# or Python
 
 For distribution notes and API details, start with `docs/README.md`.
+
+## Packaging (ZIP)
+
+See `PACKAGING.md` for what to include in the downloadable SDK archive and pre-release checks.

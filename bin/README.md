@@ -1,4 +1,4 @@
-﻿# Titan-ANPR runtime bin folder
+# Titan-ANPR runtime bin folder
 
 This folder is **not tracked in Git** because it contains large native binaries.
 When you build or unpack the official SDK ZIP, it should have a structure similar
@@ -39,8 +39,8 @@ release ZIP, you should:
 
 ## How samples use this folder
 
-- C# (`samples/csharp`): set `nativeBinDirectory` in `Program.Main` or the
-  `TITAN_ANPR_NATIVE_DIR` environment variable to point to the folder that
+- C# (`samples/csharp`): leave `nativeBinDirectory` as `null` in `Program.Main`
+  and use `TITAN_ANPR_NATIVE_DIR`, or set `nativeBinDirectory` to the folder that
   contains `Titan-ANPR.dll` and its dependencies.
 - Python (`samples/python`): pass `--bin` to the scripts so
   `titan_anpr_bindings.load_dll()` can resolve `Titan-ANPR.dll` and load its

@@ -1,4 +1,4 @@
-﻿using System.Runtime.InteropServices;
+using System.Runtime.InteropServices;
 
 namespace Titan.Anpr.NativeInterop;
 
@@ -16,13 +16,15 @@ public static class TitanAnprNative
     }
 
     /// <summary>Result item returned by <see cref="TitanANPR_Detect"/>.</summary>
-    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+    [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi, Pack = 4)]
     public struct TitanAnprResult
     {
         public int found;
         public float total_confidence;
         public float plate_confidence;
         public float ocr_confidence;
+        public int country_id;
+        public float country_confidence;
         public PlatePoint point0;
         public PlatePoint point1;
         public PlatePoint point2;
@@ -30,6 +32,9 @@ public static class TitanAnprNative
 
         [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 32)]
         public string plate_text;
+
+        [MarshalAs(UnmanagedType.ByValTStr, SizeConst = 64)]
+        public string country_name;
     }
 
     [DllImport(NativeDll.DllName, CallingConvention = CallingConvention.Cdecl, ExactSpelling = true, EntryPoint = "TitanANPR_Init")]
